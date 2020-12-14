@@ -97,8 +97,8 @@ func main() {
 	viziocontroller.GetCurrentApp( ip_address , auth_token )
 	// Look Here to Find APP_ID 's , Namespace Integers , and Messages
 	// https://github.com/vkorn/pyvizio/blob/master/pyvizio/const.py
-	// viziocontroller.LaunchApp( ip_address , auth_token , "75" , 4 , "https://cd-dmgz.bamgrid.com/bbd/vizio_tv/index.html" )
-	viziocontroller.LaunchApp( ip_address , auth_token , "hdmi1" , 8 , "None" ) // Disney+
+	// viziocontroller.LaunchApp( ip_address , auth_token , "75" , 4 , "https://cd-dmgz.bamgrid.com/bbd/vizio_tv/index.html" ) // Disney+
+	viziocontroller.LaunchApp( ip_address , auth_token , "hdmi1" , 8 , "None" )
 
 }
 ```
