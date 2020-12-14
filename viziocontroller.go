@@ -2,7 +2,6 @@ package viziocontroller
 
 import (
 	"fmt"
-	"context"
 	"bytes"
 	"reflect"
 	"encoding/json"
