@@ -1,13 +1,12 @@
 # Vizio Controller
 
+```
 import (
 	"time"
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	viziocontroller "github.com/0187773933/VizioController"
 )
-
-```
 
 func get_redis_connection( address string , db int , password string ) ( redis_connection *redis.Client ) {
 	redis_connection = redis.NewClient(&redis.Options{
@@ -32,58 +31,58 @@ func main() {
 	// if err != nil { panic( err ) }
 
 	// Power
-	power_state := GetPowerState( ip_address , auth_token )
+	power_state := viziocontroller.GetPowerState( ip_address , auth_token )
 	fmt.Println( power_state )
 	PowerOff( ip_address , auth_token )
 	time.Sleep( 2 * time.Second )
 	PowerOn( ip_address , auth_token )
 
 	// Volume
-	volume := GetVolume( ip_address , auth_token )
+	volume := viziocontroller.GetVolume( ip_address , auth_token )
 	fmt.Println( volume )
-	VolumeDown( ip_address , auth_token )
+	viziocontroller.VolumeDown( ip_address , auth_token )
 	time.Sleep( 1 * time.Second )
-	VolumeUp( ip_address , auth_token )
+	viziocontroller.VolumeUp( ip_address , auth_token )
 	time.Sleep( 1 * time.Second )
-	MuteOff( ip_address , auth_token )
+	viziocontroller.MuteOff( ip_address , auth_token )
 	time.Sleep( 1 * time.Second )
-	MuteOn( ip_address , auth_token )
+	viziocontroller.MuteOn( ip_address , auth_token )
 	time.Sleep( 1 * time.Second )
-	MuteToggle( ip_address , auth_token )
+	viziocontroller.MuteToggle( ip_address , auth_token )
 
 	// Inputs
-	current_input := GetCurrentInput( ip_address , auth_token )
+	current_input := viziocontroller.GetCurrentInput( ip_address , auth_token )
 	fmt.Println( current_input )
 	time.Sleep( 1 * time.Second )
-	available_inputs := GetAvailableInputs( ip_address , auth_token )
+	available_inputs := viziocontroller.GetAvailableInputs( ip_address , auth_token )
 	fmt.Println( available_inputs )
-	SetInput( ip_address , auth_token , "HDMI-2" )
+	viziocontroller.SetInput( ip_address , auth_token , "HDMI-2" )
 	time.Sleep( 2 * time.Second )
-	SetInput( ip_address , auth_token , "HDMI-1" )
+	viziocontroller.SetInput( ip_address , auth_token , "HDMI-1" )
 	time.Sleep( 2 * time.Second )
-	CycleInput( ip_address , auth_token )
+	viziocontroller.CycleInput( ip_address , auth_token )
 
 	// Audio Settings
-	audio_settings_tv_speakers := GetAudioSetting( ip_address , auth_token , "tv_speakers" )
+	audio_settings_tv_speakers := viziocontroller.GetAudioSetting( ip_address , auth_token , "tv_speakers" )
 	fmt.Println( audio_settings_tv_speakers )
-	GetAllAudioSettingsOptions( ip_address , auth_token )
-	tv_speakers := GetAudioSettingsOption( ip_address , auth_token , "tv_speakers" )
+	viziocontroller.GetAllAudioSettingsOptions( ip_address , auth_token )
+	tv_speakers := viziocontroller.GetAudioSettingsOption( ip_address , auth_token , "tv_speakers" )
 	fmt.Println( tv_speakers )
-	SetAudioSetting( ip_address , auth_token , "mute" , "Off" )
+	viziocontroller.SetAudioSetting( ip_address , auth_token , "mute" , "Off" )
 
 	// Other Settings
-	GetSettingsTypes( ip_address , auth_token )
-	GetAllSettingsForType( ip_address , auth_token , "network" )
-	GetAllSettingsOptionsForType( ip_address , auth_token , "picture" )
-	GetSetting( ip_address , auth_token , "picture" , "backlight" )
-	SetSettingsOption( ip_address , auth_token , "picture" , "backlight" , 100 )
+	viziocontroller.GetSettingsTypes( ip_address , auth_token )
+	viziocontroller.GetAllSettingsForType( ip_address , auth_token , "network" )
+	viziocontroller.GetAllSettingsOptionsForType( ip_address , auth_token , "picture" )
+	viziocontroller.GetSetting( ip_address , auth_token , "picture" , "backlight" )
+	viziocontroller.SetSettingsOption( ip_address , auth_token , "picture" , "backlight" , 100 )
 
 	// Smart Apps
-	GetCurrentApp( ip_address , auth_token )
+	viziocontroller.GetCurrentApp( ip_address , auth_token )
 	// Look Here to Find APP_ID 's , Namespace Integers , and Messages
 	// https://github.com/vkorn/pyvizio/blob/master/pyvizio/const.py
-	// LaunchApp( ip_address , auth_token , "75" , 4 , "https://cd-dmgz.bamgrid.com/bbd/vizio_tv/index.html" )
-	LaunchApp( ip_address , auth_token , "hdmi1" , 8 , "None" ) // Disney+
+	// viziocontroller.LaunchApp( ip_address , auth_token , "75" , 4 , "https://cd-dmgz.bamgrid.com/bbd/vizio_tv/index.html" )
+	viziocontroller.LaunchApp( ip_address , auth_token , "hdmi1" , 8 , "None" ) // Disney+
 
 }
 ```
