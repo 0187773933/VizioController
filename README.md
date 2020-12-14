@@ -17,6 +17,21 @@ func get_redis_connection( address string , db int , password string ) ( redis_c
 	return
 }
 
+func RegenerateAuthToken() {
+	var ctx = context.Background()
+	redis_connection := get_redis_connection( "localhost:6379", 3 , "" )
+	ip_address , err := redis_connection.Get( ctx , "STATE.VIZIO_TV.IP_ADDRESS" ).Result()
+	if err != nil { panic( err ) }
+	fmt.Println( "STATE.VIZIO_TV.IP_ADDRESS" , ip_address )
+	pairing_request_token := pairing_stage_one( ip_address )
+	fmt.Println( "Enter Code Displayed on TV")
+	var code_displayed_on_tv string
+	fmt.Scanln( &code_displayed_on_tv )
+	auth_token := paring_stage_two( ip_address , pairing_request_token , code_displayed_on_tv )
+	err = redis_connection.Set( ctx , "STATE.VIZIO_TV.AUTH_TOKEN", auth_token , 0 ).Err()
+	if err != nil { fmt.Println( err ) }
+}
+
 func main() {
 	// RegenerateAuthToken()
 
