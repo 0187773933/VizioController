@@ -2,6 +2,7 @@
 
 ```
 import (
+	"context"
 	"time"
 	"fmt"
 	"github.com/go-redis/redis/v8"
@@ -48,9 +49,9 @@ func main() {
 	// Power
 	power_state := viziocontroller.GetPowerState( ip_address , auth_token )
 	fmt.Println( power_state )
-	PowerOff( ip_address , auth_token )
+	viziocontroller.PowerOff( ip_address , auth_token )
 	time.Sleep( 2 * time.Second )
-	PowerOn( ip_address , auth_token )
+	viziocontroller.PowerOn( ip_address , auth_token )
 
 	// Volume
 	volume := viziocontroller.GetVolume( ip_address , auth_token )
