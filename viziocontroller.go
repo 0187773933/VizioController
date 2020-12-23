@@ -10,8 +10,6 @@ import (
 	"io/ioutil"
 )
 
-
-
 // Auth Functions
 
 func pairing_stage_one( ip_address string ) ( result int32 ) {
@@ -533,8 +531,8 @@ func MuteToggle( ip_address string , auth_token string ) ( result string ) {
 }
 
 type InputType struct {
-	name string
-	hash_value int64
+	Name string
+	HashValue int64
 }
 type CurrentInputSetting struct {
 	HASHLIST []int64 `json:"HASHLIST"`
@@ -579,8 +577,8 @@ func GetCurrentInput( ip_address string , auth_token string ) ( result InputType
 	var result_json CurrentInputSetting
 	json_decode_error := json.Unmarshal( body , &result_json )
 	if json_decode_error != nil { fmt.Println( json_decode_error ); return result }
-	result.name = result_json.ITEMS[0].VALUE
-	result.hash_value = result_json.ITEMS[0].HASHVAL
+	result.Name = result_json.ITEMS[0].VALUE
+	result.HashValue = result_json.ITEMS[0].HASHVAL
 	return result
 }
 
@@ -656,7 +654,7 @@ func SetInput( ip_address string , auth_token string , input_name string ) ( res
 		_url: "/menu_native/dynamic/tv_settings/devices/current_input" ,
 		item_name: "CURRENT_INPUT" ,
 		VALUE: input_name ,
-		HASHVAL: current_input.hash_value ,
+		HASHVAL: current_input.HashValue ,
 		REQUEST: "MODIFY" ,
 	})
 	url := fmt.Sprintf( "https://%s:7345/menu_native/dynamic/tv_settings/devices/current_input" , ip_address )
