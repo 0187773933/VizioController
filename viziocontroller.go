@@ -632,7 +632,7 @@ func GetAvailableInputs( ip_address string , auth_token string ) ( result InputL
 	json_decode_error := json.Unmarshal( body , &result_json )
 	if json_decode_error != nil { fmt.Println( json_decode_error ); return result }
 	for _ , item := range result_json.ITEMS {
-		result = append( result , InputType{
+		result = append( result , InputType {
 			Name: item.VALUE.NAME ,
 			HashValue: item.HASHVAL ,
 		})
