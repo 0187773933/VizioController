@@ -17,7 +17,7 @@ else
    echo "Not an integer Resetting"
    NextCommitNumber=1
 fi
+git remote add origin git@github.com:0187773933/VizioController.git
 git add .
 git commit -m "$NextCommitNumber"
-git remote add origin git@github.com:0187773933/VizioController.git
 git push origin master
