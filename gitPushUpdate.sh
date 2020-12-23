@@ -6,7 +6,7 @@ git config --global --unset user.name
 git config --global --unset user.email
 git config user.name "0187773933"
 git config user.email "collincerbus@student.olympic.edu"
-ssh-add -k /Users/morpheous/.ssh/githubWinStitch
+ssh-add -k /home/morphs/.ssh/githubWinStitch
 
 LastCommit=$(git log -1 --pretty="%B" | xargs)
 # https://stackoverflow.com/a/3626205
