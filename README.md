@@ -1,12 +1,14 @@
 # Vizio Controller
 
 ```
+package main
+
 import (
 	"context"
 	"time"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	viziocontroller "github.com/0187773933/VizioController"
+	viziocontroller "github.com/0187773933/VizioController/controller"
 )
 
 func get_redis_connection( address string , db int , password string ) ( redis_connection *redis.Client ) {
@@ -18,23 +20,40 @@ func get_redis_connection( address string , db int , password string ) ( redis_c
 	return
 }
 
-func RegenerateAuthToken() {
+func PrepareTV() {
 	var ctx = context.Background()
 	redis_connection := get_redis_connection( "localhost:6379", 3 , "" )
 	ip_address , err := redis_connection.Get( ctx , "STATE.VIZIO_TV.IP_ADDRESS" ).Result()
 	if err != nil { panic( err ) }
-	fmt.Println( "STATE.VIZIO_TV.IP_ADDRESS" , ip_address )
-	pairing_request_token := pairing_stage_one( ip_address )
-	fmt.Println( "Enter Code Displayed on TV")
-	var code_displayed_on_tv string
-	fmt.Scanln( &code_displayed_on_tv )
-	auth_token := paring_stage_two( ip_address , pairing_request_token , code_displayed_on_tv )
-	err = redis_connection.Set( ctx , "STATE.VIZIO_TV.AUTH_TOKEN", auth_token , 0 ).Err()
-	if err != nil { fmt.Println( err ) }
+	auth_token , err := redis_connection.Get( ctx , "STATE.VIZIO_TV.AUTH_TOKEN" ).Result()
+	if err != nil { panic( err ) }
+
+	current_power_state := viziocontroller.GetPowerState( ip_address , auth_token )
+	fmt.Println( current_power_state )
+	if current_power_state == 0 {
+		viziocontroller.PowerOn( ip_address , auth_token )
+	}
+	current_volume := viziocontroller.GetVolume( ip_address , auth_token )
+	fmt.Println( current_volume )
+	if current_volume < 12 {
+		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "volume" , 12 )
+	}
+	current_input := viziocontroller.GetCurrentInput( ip_address , auth_token )
+	fmt.Println( current_input.Name )
+	if current_input.Name != "hdmi1" {
+		viziocontroller.SetInput( ip_address , auth_token , "HDMI-1" )
+	}
+
+	mute_value :=  viziocontroller.GetSetting( ip_address , auth_token , "audio" , "mute" )
+	mute_value_string := mute_value.ITEMS[0].VALUE.(string)
+	if mute_value_string != "Off" {
+		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "mute" , "Off" )
+	}
 }
 
 func main() {
-	// RegenerateAuthToken()
+	// viziocontroller.RegenerateAuthToken()
+	// PrepareTV()
 
 	// Get IP , Auth Token , and Mac Address From Redis
 	var ctx = context.Background()
@@ -45,6 +64,30 @@ func main() {
 	if err != nil { panic( err ) }
 	// mac_address , err = redis_connection.Get( ctx , "CONFIG.VIZIO_TV.MAC_ADDRESS" ).Result()
 	// if err != nil { panic( err ) }
+
+
+	current_power_state := viziocontroller.GetPowerState( ip_address , auth_token )
+	fmt.Println( current_power_state )
+	if current_power_state == 0 {
+		viziocontroller.PowerOn( ip_address , auth_token )
+	}
+	current_volume := viziocontroller.GetVolume( ip_address , auth_token )
+	fmt.Println( current_volume )
+	if current_volume < 12 {
+		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "volume" , 12 )
+	}
+	current_input := viziocontroller.GetCurrentInput( ip_address , auth_token )
+	fmt.Println( current_input.Name )
+	if current_input.Name != "hdmi1" {
+		viziocontroller.SetInput( ip_address , auth_token , "HDMI-1" )
+	}
+
+	mute_value :=  viziocontroller.GetSetting( ip_address , auth_token , "audio" , "mute" )
+	mute_value_string := mute_value.ITEMS[0].VALUE.(string)
+	if mute_value_string != "Off" {
+		viziocontroller.SetSettingsOption( ip_address , auth_token , "audio" , "mute" , "Off" )
+	}
+	time.Sleep( 1 * time.Second )
 
 	// Power
 	power_state := viziocontroller.GetPowerState( ip_address , auth_token )
