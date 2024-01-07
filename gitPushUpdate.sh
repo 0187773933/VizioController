@@ -20,4 +20,4 @@ fi
 git add .
 git commit -m "$NextCommitNumber"
 git remote add origin git@github.com:0187773933/VizioController.git
-git push origin master -f
+git push origin master
