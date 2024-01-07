@@ -1,0 +1,4 @@
+ip_address: ""
+auth_token: ""
+device_id: "pyvizio"
+device_name: "Golang Vizio"
