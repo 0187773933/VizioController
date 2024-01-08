@@ -21,7 +21,7 @@ func main() {
 
 	// Volume
 	// fmt.Println( x.VolumeGet() )
-	x.VolumeSet( 2 )
+	// x.VolumeSet( 2 )
 	// x.VolumeUp()
 	// x.PowerDown()
 	// x.MuteOn()
@@ -29,7 +29,7 @@ func main() {
 	// x.MuteToggle()
 
 	// Inputs
-	// fmt.Println( x.InputGetCurrent() )
+	fmt.Println( x.InputGetCurrent() )
 	// fmt.Println( x.InputGetAvailable() )
 	// x.InputSet( "TV" )
 	// time.Sleep( 3 * time.Second )
