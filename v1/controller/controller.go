@@ -17,7 +17,33 @@ type Controller struct {
 	HTTPClient *http.Client `yaml:"-"`
 }
 
-func New( config *types.ConfigFile ) ( result *Controller ) {
+func New( ip_address string , auth_token string ) ( result *Controller ) {
+	config := &types.ConfigFile{
+		ConfigFilePath: "./config.yaml" ,
+		IPAddress: ip_address ,
+		AuthToken: auth_token ,
+		DeviceID: "govizio" ,
+		DeviceName: "Golang Vizio" ,
+	}
+	result = &Controller{
+		Config: *config ,
+		HTTPClient: &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{ InsecureSkipVerify : true } ,
+			} ,
+		} ,
+	}
+	if config.IPAddress == "" { panic( "You didn't pass the TV's IP Address in the config" ) }
+	if config.AuthToken == "" {
+		fmt.Println( "You didn't pass an auth token in the config , re-pairing with tv" )
+		result.Pair()
+		utils.SaveConfig( config.ConfigFilePath , result.Config )
+		fmt.Println( "Paired Successfully , saved auth token in config file" )
+	}
+	return
+}
+
+func NewFromConfig( config *types.ConfigFile ) ( result *Controller ) {
 	result = &Controller{
 		Config: *config ,
 		HTTPClient: &http.Client{
