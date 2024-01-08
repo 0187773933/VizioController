@@ -3,6 +3,8 @@ package controller
 import (
 	"fmt"
 	"bytes"
+	"math"
+	"time"
 	// "reflect"
 	"encoding/json"
 	"net/http"
@@ -185,6 +187,36 @@ func ( ctrl *Controller ) VolumeGet() ( result int ) {
 	ctrl.API( "GET" , "/menu_native/dynamic/tv_settings/audio/volume" , nil , &response )
 	result = response.ITEMS[ 0 ].VALUE
 	return
+}
+
+func ( ctrl *Controller ) VolumeSet( target_volume int ) {
+	current_volume := ctrl.VolumeGet()
+	if current_volume == target_volume { return }
+	difference := ( current_volume - target_volume )
+	difference_abs := int( math.Abs( float64( difference ) ) )
+	// fmt.Println( "Current Volume" , current_volume )
+	// fmt.Println( "Target" , target_volume )
+	// fmt.Println( "Difference" , difference )
+	// fmt.Println( "Difference ABS" , difference_abs )
+	if current_volume > target_volume {
+		for i := 0; i < difference_abs; i++ {
+			// fmt.Println( "VolumeDown()" )
+			ctrl.VolumeDown()
+			if ( i+1 )%8 == 0 && i != 0 {
+				time.Sleep( 1000 * time.Millisecond ) // extra sleep every 8th iteration
+			}
+			time.Sleep( 300 * time.Millisecond )
+		}
+	} else {
+		for i := 0; i < difference_abs; i++ {
+			// fmt.Println( "VolumeUp()" )
+			ctrl.VolumeUp()
+			if ( i+1 )%8 == 0 && i != 0 {
+				time.Sleep( 1000 * time.Millisecond ) // extra sleep every 8th iteration
+			}
+			time.Sleep( 300 * time.Millisecond )
+		}
+	}
 }
 
 func ( ctrl *Controller ) VolumeUp() ( result bool ) {

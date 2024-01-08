@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	x := controller.New( "192.168.4.194" , "" )
+	x := controller.New( "192.168.4.194" , "Zloom5087o" )
 	// config := utils.GetConfig()
 	// x := controller.NewFromConfig( &config )
 	// fmt.Println( x )
@@ -21,6 +21,7 @@ func main() {
 
 	// Volume
 	// fmt.Println( x.VolumeGet() )
+	x.VolumeSet( 2 )
 	// x.VolumeUp()
 	// x.PowerDown()
 	// x.MuteOn()
