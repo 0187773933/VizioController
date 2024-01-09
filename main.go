@@ -15,12 +15,12 @@ func main() {
 	// fmt.Println( x )
 
 	// Power
-	fmt.Println( x.PowerGetState() )
+	// fmt.Println( x.PowerGetState() )
 	// x.PowerOn()
 	// x.PowerOff()
 
 	// Volume
-	// fmt.Println( x.VolumeGet() )
+	fmt.Println( x.VolumeGet() )
 	// x.VolumeSet( 2 )
 	// x.VolumeUp()
 	// x.PowerDown()
@@ -29,9 +29,10 @@ func main() {
 	// x.MuteToggle()
 
 	// Inputs
-	fmt.Println( x.InputGetCurrent() )
+	// fmt.Println( x.InputGetCurrent() )
 	// fmt.Println( x.InputGetAvailable() )
 	// x.InputSet( "TV" )
+	// x.InputSet( "hdmi1" )
 	// time.Sleep( 3 * time.Second )
 	// x.InputSet( "HDMI-2" )
 	// x.InputCycle()

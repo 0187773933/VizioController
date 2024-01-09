@@ -18,6 +18,14 @@ else
    NextCommitNumber=1
 fi
 git add .
-git commit -m "$NextCommitNumber"
+git tag -l | xargs git tag -d
+if [ -n "$1" ]; then
+   git commit -m "$1"
+   git tag v1.0.$1
+else
+   git commit -m "$NextCommitNumber"
+   git tag v1.0.$NextCommitNumber
+fi
 git remote add origin git@github.com:0187773933/VizioController.git
+git push origin --tags
 git push origin master

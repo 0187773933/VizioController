@@ -185,6 +185,8 @@ func ( ctrl *Controller ) PowerOff() ( result bool ) {
 func ( ctrl *Controller ) VolumeGet() ( result int ) {
 	var response types.VolumeGetResponse
 	ctrl.API( "GET" , "/menu_native/dynamic/tv_settings/audio/volume" , nil , &response )
+	utils.PrettyPrint( response )
+	if len( response.ITEMS ) == 0 { return }
 	result = response.ITEMS[ 0 ].VALUE
 	return
 }
@@ -248,6 +250,7 @@ func ( ctrl *Controller ) MuteToggle() ( result bool ) {
 func ( ctrl *Controller ) InputGetCurrent() ( result types.Input ) {
 	var response types.InputGetCurrentResponse
 	ctrl.API( "GET" , "/menu_native/dynamic/tv_settings/devices/current_input" , nil , &response )
+	// utils.PrettyPrint( response )
 	result.Name = response.ITEMS[ 0 ].VALUE
 	result.HashValue = response.ITEMS[ 0 ].HASHVAL
 	return
@@ -277,7 +280,6 @@ func ( ctrl *Controller ) InputSet( input_name string ) ( result []types.Input )
 		REQUEST: "MODIFY" ,
 	}
 	ctrl.API( "PUT" , url_part , &put_data , &response )
-	fmt.Println( response )
 	return
 }
 
@@ -299,7 +301,7 @@ func ( ctrl *Controller ) AudioGetSettingsOption( setting_name string ) { // sta
 	url_part := fmt.Sprintf( "/menu_native/static/tv_settings/audio/%s" , setting_name )
 	ctrl.API( "GET" , url_part , nil , &response )
 	// TODO , figure out why we care about this , and what to actually return
-	fmt.Println( response )
+	utils.PrettyPrint( response )
 }
 
 func ( ctrl *Controller ) AudioGetAllSettings() ( response types.AudioGetAllSettingsResponse ) {
@@ -322,7 +324,6 @@ func ( ctrl *Controller ) AudioSetSetting( setting_name string , setting_option 
 	}
 	var response types.AudioSetSettingResponse
 	ctrl.API( "PUT" , url_part , &put_data , &response )
-	fmt.Println( response )
 	return
 }
 
@@ -331,28 +332,24 @@ func ( ctrl *Controller ) AudioSetSetting( setting_name string , setting_option 
 func ( ctrl *Controller ) SettingsGetTypes() ( response types.SettingsGetTypesResponse ) {
 	url_part := "/menu_native/dynamic/tv_settings"
 	ctrl.API( "GET" , url_part , nil , &response )
-	utils.PrettyPrint( response )
 	return
 }
 
 func ( ctrl *Controller ) SettingsGetType( settings_type string ) ( response types.SettingsGetTypeResponse ) {
 	url_part := fmt.Sprintf( "/menu_native/dynamic/tv_settings/%s" , settings_type )
 	ctrl.API( "GET" , url_part , nil , &response )
-	utils.PrettyPrint( response )
 	return
 }
 
 func ( ctrl *Controller ) SettingsGetOptionsForType( settings_type string ) ( response types.SettingsGetTypeResponse ) {
 	url_part := fmt.Sprintf( "/menu_native/static/tv_settings/%s" , settings_type )
 	ctrl.API( "GET" , url_part , nil , &response )
-	utils.PrettyPrint( response )
 	return
 }
 
 func ( ctrl *Controller ) SettingsGet( settings_type string , setting_name string ) ( response types.SettingsGetResponse ) {
 	url_part := fmt.Sprintf( "/menu_native/dynamic/tv_settings/%s/%s" , settings_type , setting_name )
 	ctrl.API( "GET" , url_part , nil , &response )
-	utils.PrettyPrint( response )
 	return
 }
 
@@ -370,7 +367,6 @@ func ( ctrl *Controller ) SettingsSet( settings_type string , setting_name strin
 				REQUEST: "MODIFY" ,
 			}
 			ctrl.API( "PUT" , url_part , &put_data , &response )
-			utils.PrettyPrint( response )
 			break
 		case int:
 			put_data := types.SettingsSetIntRequest{
@@ -381,7 +377,6 @@ func ( ctrl *Controller ) SettingsSet( settings_type string , setting_name strin
 				REQUEST: "MODIFY" ,
 			}
 			ctrl.API( "PUT" , url_part , &put_data , &response )
-			utils.PrettyPrint( response )
 			break
 	}
 	return
@@ -392,7 +387,6 @@ func ( ctrl *Controller ) SettingsSet( settings_type string , setting_name strin
 func ( ctrl *Controller ) AppGetCurrent() ( response types.AppGetCurrentResponse ) {
 	url_part := "/app/current"
 	ctrl.API( "GET" , url_part , nil , &response )
-	utils.PrettyPrint( response )
 	return
 }
 
@@ -409,6 +403,5 @@ func ( ctrl *Controller ) AppLaunch( app_id string , name_space int , message st
 		} ,
 	}
 	ctrl.API( "PUT" , url_part , &put_data , &response )
-	utils.PrettyPrint( response )
 	return
 }
