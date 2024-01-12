@@ -193,8 +193,8 @@ func ( ctrl *Controller ) VolumeGet() ( result int ) {
 }
 
 func ( ctrl *Controller ) VolumeSet( target_volume int ) {
-	// current_volume := ctrl.VolumeGet()
-	// if current_volume == target_volume { return }
+	current_volume := ctrl.VolumeGet()
+	if current_volume == target_volume { return }
 	// difference := ( current_volume - target_volume )
 	// difference_abs := int( math.Abs( float64( difference ) ) )
 	// // fmt.Println( "Current Volume" , current_volume )
