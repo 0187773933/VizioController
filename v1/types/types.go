@@ -170,11 +170,26 @@ type InputGetAvailableResponse struct {
 	URI string `json:"URI"`
 }
 
-
 type InputSetRequest struct {
 	URL string `json:"_url"`
 	ItemName string `json:"item_name"`
 	VALUE string `json:"VALUE"`
+	HASHVAL int64 `json:"HASHVAL"`
+	REQUEST string `json:"REQUEST"`
+}
+
+type InputSetRequestString struct {
+	URL string `json:"_url"`
+	ItemName string `json:"item_name"`
+	VALUE string `json:"VALUE"`
+	HASHVAL int64 `json:"HASHVAL"`
+	REQUEST string `json:"REQUEST"`
+}
+
+type InputSetRequestInt struct {
+	URL string `json:"_url"`
+	ItemName string `json:"item_name"`
+	VALUE int `json:"VALUE"`
 	HASHVAL int64 `json:"HASHVAL"`
 	REQUEST string `json:"REQUEST"`
 }
@@ -267,6 +282,36 @@ type AudioSetSettingResponse struct {
 		HASHVAL int64
 		REQUEST string
 		VALUE string
+	}
+	ITEMS []AudioSettingResultItem
+	HASHLIST []int64
+	URI string
+}
+
+type AudioSetSettingResponseString struct {
+	STATUS struct {
+		RESULT string
+		DETAIL string
+	}
+	PARAMETERS struct {
+		HASHVAL int64
+		REQUEST string
+		VALUE string
+	}
+	ITEMS []AudioSettingResultItem
+	HASHLIST []int64
+	URI string
+}
+
+type AudioSetSettingResponseInt struct {
+	STATUS struct {
+		RESULT string
+		DETAIL string
+	}
+	PARAMETERS struct {
+		HASHVAL int64
+		REQUEST string
+		VALUE int
 	}
 	ITEMS []AudioSettingResultItem
 	HASHLIST []int64

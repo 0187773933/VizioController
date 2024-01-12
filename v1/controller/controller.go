@@ -3,9 +3,9 @@ package controller
 import (
 	"fmt"
 	"bytes"
-	"math"
+	// "math"
 	"time"
-	// "reflect"
+	"reflect"
 	"encoding/json"
 	"net/http"
 	"crypto/tls"
@@ -193,33 +193,34 @@ func ( ctrl *Controller ) VolumeGet() ( result int ) {
 }
 
 func ( ctrl *Controller ) VolumeSet( target_volume int ) {
-	current_volume := ctrl.VolumeGet()
-	if current_volume == target_volume { return }
-	difference := ( current_volume - target_volume )
-	difference_abs := int( math.Abs( float64( difference ) ) )
-	// fmt.Println( "Current Volume" , current_volume )
-	// fmt.Println( "Target" , target_volume )
-	// fmt.Println( "Difference" , difference )
-	// fmt.Println( "Difference ABS" , difference_abs )
-	if current_volume > target_volume {
-		for i := 0; i < difference_abs; i++ {
-			// fmt.Println( "VolumeDown()" )
-			ctrl.VolumeDown()
-			if ( i+1 )%8 == 0 && i != 0 {
-				time.Sleep( 1000 * time.Millisecond ) // extra sleep every 8th iteration
-			}
-			time.Sleep( 300 * time.Millisecond )
-		}
-	} else {
-		for i := 0; i < difference_abs; i++ {
-			// fmt.Println( "VolumeUp()" )
-			ctrl.VolumeUp()
-			if ( i+1 )%8 == 0 && i != 0 {
-				time.Sleep( 1000 * time.Millisecond ) // extra sleep every 8th iteration
-			}
-			time.Sleep( 300 * time.Millisecond )
-		}
-	}
+	// current_volume := ctrl.VolumeGet()
+	// if current_volume == target_volume { return }
+	// difference := ( current_volume - target_volume )
+	// difference_abs := int( math.Abs( float64( difference ) ) )
+	// // fmt.Println( "Current Volume" , current_volume )
+	// // fmt.Println( "Target" , target_volume )
+	// // fmt.Println( "Difference" , difference )
+	// // fmt.Println( "Difference ABS" , difference_abs )
+	// if current_volume > target_volume {
+	// 	for i := 0; i < difference_abs; i++ {
+	// 		// fmt.Println( "VolumeDown()" )
+	// 		ctrl.VolumeDown()
+	// 		if ( i+1 )%4 == 0 && i != 0 {
+	// 			time.Sleep( 1000 * time.Millisecond ) // extra sleep every 4th iteration
+	// 		}
+	// 		time.Sleep( 300 * time.Millisecond )
+	// 	}
+	// } else {
+	// 	for i := 0; i < difference_abs; i++ {
+	// 		// fmt.Println( "VolumeUp()" )
+	// 		ctrl.VolumeUp()
+	// 		if ( i+1 )%8 == 0 && i != 0 {
+	// 			time.Sleep( 1000 * time.Millisecond ) // extra sleep every 8th iteration
+	// 		}
+	// 		time.Sleep( 300 * time.Millisecond )
+	// 	}
+	// }
+	ctrl.AudioSetSetting( "volume" , target_volume )
 }
 
 func ( ctrl *Controller ) VolumeUp() ( result bool ) {
@@ -357,19 +358,40 @@ func ( ctrl *Controller ) AudioGetAllSettings() ( response types.AudioGetAllSett
 	return
 }
 
-func ( ctrl *Controller ) AudioSetSetting( setting_name string , setting_option string ) {
+func ( ctrl *Controller ) AudioSetSetting( setting_name string , setting_option interface{} ) {
 	current_setting := ctrl.AudioGetSetting( setting_name )
 	fmt.Println( current_setting )
 	url_part := fmt.Sprintf( "/menu_native/dynamic/tv_settings/audio/%s" , setting_name )
-	put_data := types.InputSetRequest{
-		URL: url_part ,
-		ItemName: "SETTINGS" ,
-		VALUE: setting_option ,
-		HASHVAL: current_setting.ITEMS[ 0 ].HASHVAL ,
-		REQUEST: "MODIFY" ,
+
+	switch reflect.TypeOf( setting_option ).Kind() {
+		case reflect.Int:
+			v_cast := setting_option.( int )
+			put_data := types.InputSetRequestInt{
+				URL: url_part ,
+				ItemName: "SETTINGS" ,
+				VALUE: v_cast ,
+				HASHVAL: current_setting.ITEMS[ 0 ].HASHVAL ,
+				REQUEST: "MODIFY" ,
+			}
+			var response types.AudioSetSettingResponseInt
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		case reflect.String:
+			v_cast := setting_option.( string )
+			put_data := types.InputSetRequestString{
+				URL: url_part ,
+				ItemName: "SETTINGS" ,
+				VALUE: v_cast ,
+				HASHVAL: current_setting.ITEMS[ 0 ].HASHVAL ,
+				REQUEST: "MODIFY" ,
+			}
+			var response types.AudioSetSettingResponseString
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		default:
+			fmt.Println( "Unknown setting type:" , reflect.TypeOf( setting_option ) )
+			return;
 	}
-	var response types.AudioSetSettingResponse
-	ctrl.API( "PUT" , url_part , &put_data , &response )
 	return
 }
 

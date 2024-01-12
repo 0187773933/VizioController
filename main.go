@@ -11,14 +11,16 @@ func PrepairTest() {
 	x := controller.New( "192.168.4.194" , "Zloom5087o" )
 	x.InputHDMISet( 2 )
 	x.MuteOff()
-	x.VolumeSet( 12 )
+	x.VolumeSet( 3 )
 }
 
 func main() {
 
 	PrepairTest()
 
-	// x := controller.New( "192.168.1.64" , "asdf" )
+	// x := controller.New( "192.168.4.194" , "Zloom5087o" )
+	// utils.PrettyPrint( x.AudioGetSetting( "volume" ) )
+
 	// config := utils.GetConfig()
 	// x := controller.NewFromConfig( &config )
 	// fmt.Println( x )
@@ -52,6 +54,7 @@ func main() {
 	// x.AudioSetSetting( "mute" , "On" )
 	// time.Sleep( 1 * time.Second )
 	// x.AudioSetSetting( "mute" , "Off" )
+	// x.AudioSetSetting( "volume" , 12 )
 
 	// Generic Settings
 	// fmt.Println( x.SettingsGetTypes() )
