@@ -1,15 +1,24 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	// "time"
 	// utils "github.com/0187773933/VizioController/v1/utils"
 	controller "github.com/0187773933/VizioController/v1/controller"
 )
 
+func PrepairTest() {
+	x := controller.New( "192.168.4.194" , "Zloom5087o" )
+	x.InputHDMISet( 2 )
+	x.MuteOff()
+	x.VolumeSet( 12 )
+}
+
 func main() {
 
-	x := controller.New( "192.168.4.194" , "Zloom5087o" )
+	PrepairTest()
+
+	// x := controller.New( "192.168.1.64" , "asdf" )
 	// config := utils.GetConfig()
 	// x := controller.NewFromConfig( &config )
 	// fmt.Println( x )
@@ -20,7 +29,7 @@ func main() {
 	// x.PowerOff()
 
 	// Volume
-	fmt.Println( x.VolumeGet() )
+	// fmt.Println( x.VolumeGet() )
 	// x.VolumeSet( 2 )
 	// x.VolumeUp()
 	// x.PowerDown()

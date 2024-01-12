@@ -185,8 +185,9 @@ func ( ctrl *Controller ) PowerOff() ( result bool ) {
 func ( ctrl *Controller ) VolumeGet() ( result int ) {
 	var response types.VolumeGetResponse
 	ctrl.API( "GET" , "/menu_native/dynamic/tv_settings/audio/volume" , nil , &response )
-	utils.PrettyPrint( response )
-	if len( response.ITEMS ) == 0 { return }
+	// utils.PrettyPrint( response )
+	if response.ITEMS == nil { return }
+	if len( response.ITEMS ) < 1 { return }
 	result = response.ITEMS[ 0 ].VALUE
 	return
 }
@@ -237,6 +238,8 @@ func ( ctrl *Controller ) MuteOn() ( result bool ) {
 }
 
 func ( ctrl *Controller ) MuteOff() ( result bool ) {
+	current_mute_setting := ctrl.AudioGetSetting( "mute" )
+	if current_mute_setting.ITEMS[ 0 ].VALUE == "Off" { return }
 	result = ctrl.KeyPress( 5 , 2 )
 	return
 }
@@ -268,7 +271,7 @@ func ( ctrl *Controller ) InputGetAvailable() ( result []types.Input ) {
 	return
 }
 
-func ( ctrl *Controller ) InputSet( input_name string ) ( result []types.Input ) {
+func ( ctrl *Controller ) InputSet( input_name string ) {
 	url_part := "/menu_native/dynamic/tv_settings/devices/current_input"
 	current_input := ctrl.InputGetCurrent()
 	var response types.InputGetAvailableResponse
@@ -280,6 +283,49 @@ func ( ctrl *Controller ) InputSet( input_name string ) ( result []types.Input )
 		REQUEST: "MODIFY" ,
 	}
 	ctrl.API( "PUT" , url_part , &put_data , &response )
+}
+
+func ( ctrl *Controller ) InputHDMISet( hdmi_input_number int ) {
+	url_part := "/menu_native/dynamic/tv_settings/devices/current_input"
+	current_input := ctrl.InputGetCurrent()
+	target_input_string := fmt.Sprintf( "hdmi%d" , hdmi_input_number )
+	if current_input.Name == target_input_string {
+		// fmt.Println( "HDMI Input Already Matches Target Output , Returning" )
+		return
+	}
+	put_data := types.InputSetRequest{
+		URL: url_part ,
+		ItemName: "CURRENT_INPUT" ,
+		VALUE: target_input_string ,
+		HASHVAL: current_input.HashValue ,
+		REQUEST: "MODIFY" ,
+	}
+	var response types.InputGetAvailableResponse
+	switch current_input.Name {
+		case "airplay":
+			// fmt.Println( "detatching from airplay , waiting 10 seconds before setting input again" )
+			ctrl.InputSet( "SMARTCAST" )
+			time.Sleep( 12 * time.Second )
+			current_input = ctrl.InputGetCurrent()
+			put_data.HASHVAL = current_input.HashValue
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		case "SMARTCAST":
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		case "watchfree":
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		case "watchfreeOta":
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		case "comp":
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+		default:
+			ctrl.API( "PUT" , url_part , &put_data , &response )
+			break;
+	}
 	return
 }
 
